@@ -16,12 +16,13 @@ search on top, adding pruning once the brute-force version passes the provided t
 
 ---
 
-## Entry 2 – [Date]: [Short description]
+## Entry 2 – 5/11 : Implemented Parts 1-2
 
-> Required. At least one entry must describe a bug, wrong assumption, or design change
-> you encountered. Describe what went wrong and how you resolved it.
-
-_Your entry here._
+My initial assumption was that the exit node should be included as a Dijkstra source, 
+but after thinking through the lookup pattern I realized exit is always a destination 
+and never a starting point, so it doesn't need its own run. Also had to think carefully 
+about nodes that appear only as neighbors and never as graph keys - solved it by 
+collecting all nodes upfront before initializing the dist table. Filled in README Parts 1 and 2.
 
 ---
 
