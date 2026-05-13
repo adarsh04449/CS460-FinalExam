@@ -73,29 +73,29 @@
 > Do not copy the invariant text from the spec.
 
 - **For nodes already finalized (in S):**
-  _Your answer here._
+  Every finalized node holds its true minimum-cost distance from the source; this value is permanent and will never be updated again
 
 - **For nodes not yet finalized (not in S):**
-  _Your answer here._
+  The current distance estimate is the cheapest path found so far that only uses finalized nodes as intermediates; it is an upper bound that may still decrease
 
 ### Part 3b: Why Each Phase Holds
 
 > One to two bullets per phase. Maintenance must mention nonnegative edge weights.
 
 - **Initialization : why the invariant holds before iteration 1:**
-  _Your answer here._
+  Only the source gets distance 0, which is trivially correct. All other nodes start at infinity since no paths have been discovered yet, so the invariant holds before the first iteration
 
 - **Maintenance : why finalizing the min-dist node is always correct:**
-  _Your answer here._
+  The node extracted from the heap always has the smallest tentative distance among all non-finalized nodes. Any alternative path to it must pass through a non-finalized node whose distance is already >= the extracted node's distance, and since all edge weights are nonnegative, extending that path cannot make it cheaper. So finalizing it is always correct
 
 - **Termination : what the invariant guarantees when the algorithm ends:**
-  _Your answer here._
+  When the heap is empty every reachable node is finalized and holds its true shortest-path distance; unreachable nodes correctly retain infinity
 
 ### Part 3c: Why This Matters for the Route Planner
 
 > One sentence connecting correct distances to correct routing decisions.
 
-_Your answer here._
+If any precomputed distance is incorrect the planner may select a relic ordering that appears cheaper but actually costs more fuel, making it impossible to guarantee the returned route is truly optimal
 
 ---
 
@@ -106,17 +106,15 @@ _Your answer here._
 > State the failure mode. Then give a concrete counter-example using specific node names
 > or costs (you may use the illustration example from the spec). Three to five bullets.
 
-- **The failure mode:** _Your answer here._
-- **Counter-example setup:** _Your answer here._
-- **What greedy picks:** _Your answer here._
-- **What optimal picks:** _Your answer here._
-- **Why greedy loses:** _Your answer here._
+- **The failure mode:** Greedy commits to the nearest unvisited relic at every step without considering how that choice affects the cost of all remaining legs
+- **Counter-example setup:** S->A=1, S->B=2, S->C=2, A->B=100, A->C=1, A->T=1, B->A=1, B->C=1, B->T=1, C->A=1, C->B=100, C->T=100
+- **What greedy picks:** S->A (1, nearest) -> A->C (1) -> C->B (100) -> B->T (1) = total 103
+- **What optimal picks:** S->B (2) -> B->C (1) -> C->A (1) -> A->T (1) = total 5
+- **Why greedy loses:** Picking A first because it is the cheapest next hop forces the expensive C->B=100 leg to collect B, while optimal pays slightly more upfront to visit B first and unlocks cheap hops for the rest of the route
 
 ### What the Algorithm Must Explore
 
-> One bullet. Must use the word "order."
-
-- _Your answer here._
+- The algorithm must explore every possible order in which the relic chambers can be visited, because the optimal order cannot be determined greedily and depends on the combined cost of the entire sequence from S through all relics to T
 
 ---
 
@@ -129,28 +127,24 @@ _Your answer here._
 
 | Component | Variable name in code | Data type | Description |
 |---|---|---|---|
-| Current location | | | |
-| Relics already collected | | | |
-| Fuel cost so far | | | |
+| Current location | `current_loc` | node (str or int) | The node where the Torchbearer currently stands |
+| Relics already collected | `relics_visited_order` | list[node] | Ordered sequence of relics collected so far |
+| Fuel cost so far | `cost_so_far` | float | Cumulative torch fuel spent to reach this state |
 
 ### Part 5b: Data Structure for Visited Relics
 
-> Fill in the table.
-
 | Property | Your answer |
 |---|---|
-| Data structure chosen | |
-| Operation: check if relic already collected | Time complexity: |
-| Operation: mark a relic as collected | Time complexity: |
-| Operation: unmark a relic (backtrack) | Time complexity: |
-| Why this structure fits | |
+| Data structure chosen | Python `set` (`relics_remaining`) |
+| Operation: check if relic already collected | O(1) average - hash lookup |
+| Operation: mark a relic as collected | O(1) average - `set.remove` |
+| Operation: unmark a relic (backtrack) | O(1) average - `set.add` |
+| Why this structure fits | Constant-time membership check and add/remove keeps each level of the recursive search efficient and backtracking is a single O(1) operation. |
 
 ### Part 5c: Worst-Case Search Space
 
-> Two bullets.
-
-- **Worst-case number of orders considered:** _Your answer (in terms of k)._
-- **Why:** _One-line justification._
+- **Worst-case number of orders considered:** O(k!) where k = |M|
+- **Why:** In the worst case there is no pruning and the algorithm explores every permutation of the k relic chambers, and the number of permutations of k items is k factorial
 
 ---
 
@@ -182,6 +176,4 @@ _Your answer here._
 
 ## References
 
-> Bullet list. If none beyond lecture notes, write that.
-
-- _Your references here._
+- Lecture notes only.

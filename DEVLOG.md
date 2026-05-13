@@ -26,10 +26,13 @@ collecting all nodes upfront before initializing the dist table. Filled in READM
 
 ---
 
-## Entry 3 – [Date]: [Short description]
+## Entry 3 – 5/12 : Search implementation and written sections
 
-_Your entry here._
-
+Implemented dijkstra_invariant_check, explain_search, find_optimal_route, _explore, 
+and solve. All four provided tests pass with the brute-force backtracking approach. 
+The trickiest part was getting backtracking right, removing a relic from 
+relics_remaining before recursing and adding it back after. Also filled in README 
+Parts 3, 4, and 5.
 ---
 
 ## Entry 4 – [Date]: Post-Implementation Reflection
