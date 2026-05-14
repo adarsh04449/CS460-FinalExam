@@ -4,17 +4,9 @@
 **Student ID:** 131073927
 **Course:** CS 460 – Algorithms | Spring 2026
 
-> This README is your project documentation. Write it the way a developer would document
-> their design decisions , bullet points, brief justifications, and concrete examples where
-> required. You are not writing an essay. You are explaining what you built and why you built
-> it that way. Delete all blockquotes like this one before submitting.
-
 ---
 
 ## Part 1: Problem Analysis
-
-> Document why this problem is not just a shortest-path problem. Three bullet points, one
-> per question. Each bullet should be 1-2 sentences max.
 
 - **Why a single shortest-path run from S is not enough:**
   A single Dijkstra run from S gives the minimum cost to reach each node individually, but cannot determine the best order to visit the relic chambers.
@@ -32,16 +24,12 @@
 
 ### Part 2a: Source Selection
 
-> List the source node types as a bullet list. For each, one-line reason.
-
 | Source Node Type | Why it is a source |
 |---|---|
 | Entrance node (spawn) | The Torchbearer starts here, so we need cheapest costs from spawn to every relic and to T. |
 | Each relic chamber | After collecting a relic the Torchbearer departs from it, so we need costs outward from every relic to the next destination. |
 
 ### Part 2b: Distance Storage
-
-> Fill in the table. No prose required.
 
 | Property | Your answer |
 |---|---|
@@ -53,8 +41,6 @@
 
 ### Part 2c: Precomputation Complexity
 
-> State the total complexity and show the arithmetic. Two to three lines max.
-
 - **Number of Dijkstra runs:** `k + 1, where k = |M|`
 - **Cost per run:** `O(m log n), where m = |E| and n = |V|`
 - **Total complexity:** `O((k + 1) · m log n) = O(k · m log n)` 
@@ -64,13 +50,7 @@
 
 ## Part 3: Algorithm Correctness
 
-> Document your understanding of why Dijkstra produces correct distances.
-> Bullet points and short sentences throughout. No paragraphs.
-
 ### Part 3a: What the Invariant Means
-
-> Two bullets: one for finalized nodes, one for non-finalized nodes.
-> Do not copy the invariant text from the spec.
 
 - **For nodes already finalized (in S):**
   Every finalized node holds its true minimum-cost distance from the source; this value is permanent and will never be updated again
@@ -79,8 +59,6 @@
   The current distance estimate is the cheapest path found so far that only uses finalized nodes as intermediates; it is an upper bound that may still decrease
 
 ### Part 3b: Why Each Phase Holds
-
-> One to two bullets per phase. Maintenance must mention nonnegative edge weights.
 
 - **Initialization : why the invariant holds before iteration 1:**
   Only the source gets distance 0, which is trivially correct. All other nodes start at infinity since no paths have been discovered yet, so the invariant holds before the first iteration
@@ -92,19 +70,13 @@
   When the heap is empty every reachable node is finalized and holds its true shortest-path distance; unreachable nodes correctly retain infinity
 
 ### Part 3c: Why This Matters for the Route Planner
-
-> One sentence connecting correct distances to correct routing decisions.
-
-If any precomputed distance is incorrect the planner may select a relic ordering that appears cheaper but actually costs more fuel, making it impossible to guarantee the returned route is truly optimal
+  If any precomputed distance is incorrect the planner may select a relic ordering that appears cheaper but actually costs more fuel, making it impossible to guarantee the returned route is truly optimal
 
 ---
 
 ## Part 4: Search Design
 
 ### Why Greedy Fails
-
-> State the failure mode. Then give a concrete counter-example using specific node names
-> or costs (you may use the illustration example from the spec). Three to five bullets.
 
 - **The failure mode:** Greedy commits to the nearest unvisited relic at every step without considering how that choice affects the cost of all remaining legs
 - **Counter-example setup:** S->A=1, S->B=2, S->C=2, A->B=100, A->C=1, A->T=1, B->A=1, B->C=1, B->T=1, C->A=1, C->B=100, C->T=100
@@ -121,9 +93,6 @@ If any precomputed distance is incorrect the planner may select a relic ordering
 ## Part 5: State and Search Space
 
 ### Part 5a: State Representation
-
-> Document the three components of your search state as a table.
-> Variable names here must match exactly what you use in torchbearer.py.
 
 | Component | Variable name in code | Data type | Description |
 |---|---|---|---|
@@ -152,25 +121,21 @@ If any precomputed distance is incorrect the planner may select a relic ordering
 
 ### Part 6a: Best-So-Far Tracking
 
-> Three bullets.
 
-- **What is tracked:** _Your answer here._
-- **When it is used:** _Your answer here._
-- **What it allows the algorithm to skip:** _Your answer here._
+- **What is tracked:** A mutable list `best` holding the lowest complete-route fuel cost seen so far in `best[0]` and the relic ordering that achieved it in `best[1]`
+- **When it is used:** At the start of every recursive call, the current lower-bound estimate is compared against `best[0]` to decide whether to continue or prune
+- **What it allows the algorithm to skip:** Any branch whose lower-bound cost already meets or exceeds `best[0]` is abandoned, avoiding exploration of all sub-orderings beneath it
 
 ### Part 6b: Lower Bound Estimation
 
-> Three bullets.
-
-- **What information is available at the current state:** _Your answer here._
-- **What the lower bound accounts for:** _Your answer here._
-- **Why it never overestimates:** _Your answer here._
+- **What information is available at the current state:** We know `cost_so_far`, the current location, and the precomputed shortest distance from the current location to the exit node
+- **What the lower bound accounts for:** It adds `cost_so_far` and the minimum possible cost to reach the exit, treating all remaining unvisited relics as if they could be collected for free
+- **Why it never overestimates:** Collecting remaining relics always costs nonnegative fuel on top of the exit leg, so the bound is always less than or equal to the true remaining cost
 
 ### Part 6c: Pruning Correctness
 
-> One to two bullets. Explain why pruning is safe.
-
-- _Your answer here._
+- If `cost_so_far + dist_to_exit >= best[0]`, every possible completion of this branch costs at least that much, which cannot improve on `best[0]`. The optimal solution is either already recorded in `best` or lives in a branch that has not been pruned.
+- The bound never overestimates the true cost, so any branch that could contain the optimal solution will have a lower bound strictly below `best[0]` and will not be pruned.
 
 ---
 

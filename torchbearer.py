@@ -169,6 +169,11 @@ def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
             best[0] = total_cost
             best[1] = list(relics_visited_order)
         return
+    
+    # Prune if the minimum possible remaining cost already meets or exceeds best
+    dist_to_exit = dist_table.get(current_loc, {}).get(exit_node, float('inf'))
+    if cost_so_far + dist_to_exit >= best[0]:
+        return
 
     # Recursive case: try each remaining relic as the next stop
     for relic in list(relics_remaining):
