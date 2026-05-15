@@ -35,27 +35,24 @@ relics_remaining before recursing and adding it back after. Also filled in READM
 Parts 3, 4, and 5.
 ---
 
-## Entry 4 – [Date]: Post-Implementation Reflection
+## Entry 4 – 5/14: Post-Implementation Reflection
 
-> Required. Written after your implementation is complete. Describe what you would
-> change or improve given more time.
-
-_Your entry here._
+Given more time I would implement a tighter lower bound that accounts for the cost
+of visiting remaining relics rather than just the exit leg, which would prune more
+branches on larger inputs without skipping the optimal solution.
 
 ---
 
-## Final Entry – [Date]: Time Estimate
-
-> Required. Estimate minutes spent per part. Honesty is expected; accuracy is not graded.
+## Final Entry – 5/14: Time Estimate
 
 | Part | Estimated Hours |
 |---|---|
-| Part 1: Problem Analysis | |
-| Part 2: Precomputation Design | |
-| Part 3: Algorithm Correctness | |
-| Part 4: Search Design | |
-| Part 5: State and Search Space | |
-| Part 6: Pruning | |
-| Part 7: Implementation | |
-| README and DEVLOG writing | |
-| **Total** | |
+| Part 1: Problem Analysis | 0.5 |
+| Part 2: Precomputation Design | 0.5 |
+| Part 3: Algorithm Correctness | 0.5 |
+| Part 4: Search Design | 0.5 |
+| Part 5: State and Search Space | 0.5 |
+| Part 6: Pruning | 0.3 |
+| Part 7: Implementation | 2 |
+| README and DEVLOG writing | 1 |
+| **Total** | 5.8 |
