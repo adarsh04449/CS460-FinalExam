@@ -112,7 +112,7 @@
 
 ### Part 5c: Worst-Case Search Space
 
-- **Worst-case number of orders considered:** O(k!) where k = |M|
+- **Worst-case number of orders considered:** k! 
 - **Why:** In the worst case there is no pruning and the algorithm explores every permutation of the k relic chambers, and the number of permutations of k items is k factorial
 
 ---
